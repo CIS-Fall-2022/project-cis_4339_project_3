@@ -124,4 +124,9 @@ router.put("/addAttendee/:id", (req, res, next) => {
     
 });
 
+
+
+//TODO: Add DELETE function for eventsData
+
+
 module.exports = router;

@@ -92,4 +92,8 @@ router.put("/:id", (req, res, next) => {
     );
 });
 
+
+//TODO: Create DELETE function for clientData
+
+
 module.exports = router;
