@@ -103,7 +103,7 @@ router.put("/:id", (req, res, next) => {
 });
 
 
-//TODO: Create DELETE route for a client by _id
+//DELETE a Client by ID
 router.delete("/:id", (req, res, next) => {
     //mongoose will use clientID of document
     primarydata.findOneAndDelete(
