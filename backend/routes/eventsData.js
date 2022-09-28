@@ -126,7 +126,22 @@ router.put("/addAttendee/:id", (req, res, next) => {
 
 
 
-//TODO: Add DELETE function for eventsData
-
+//TODO: Add DELETE function for eventsData by id
+router.delete("/:id", (req, res, next) => {
+    //mongoose will use clientID of document
+    eventdata.findOneAndDelete(
+        { _id: req.params.id }, 
+        (error, data) => {
+            if (error) {
+                return next(error);
+            } else {
+                /*res.status(200).json({
+                    msg: data
+                });*/
+                res.send('Event is deleted');
+            }
+        }
+    );
+});
 
 module.exports = router;

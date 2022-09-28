@@ -1,3 +1,4 @@
+const { application } = require("express");
 const express = require("express"); 
 const router = express.Router(); 
 
@@ -55,7 +56,7 @@ router.get("/search/", (req, res, next) => {
     );
 });
 
-//GET events for a single client
+//TODO: GET events for a single client
 router.get("/events/:id", (req, res, next) => { 
     
 });
@@ -93,7 +94,22 @@ router.put("/:id", (req, res, next) => {
 });
 
 
-//TODO: Create DELETE function for clientData
-
+//TODO: Create DELETE route for a client by _id
+router.delete("/:id", (req, res, next) => {
+    //mongoose will use clientID of document
+    primarydata.findOneAndDelete(
+        { _id: req.params.id }, 
+        (error, data) => {
+            if (error) {
+                return next(error);
+            } else {
+                res.status(200).json({
+                    msg: data
+                });
+                res.send('Client is deleted');
+            }
+        }
+    );
+});
 
 module.exports = router;
