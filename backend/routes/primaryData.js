@@ -58,7 +58,16 @@ router.get("/search/", (req, res, next) => {
 
 //TODO: GET events for a single client
 router.get("/events/:id", (req, res, next) => { 
-    
+    eventdata.find( 
+        { attendees: req.params.id }, 
+        (error, data) => { 
+            if (error) {
+                return next(error);
+            } else {
+                res.json(data);
+            }
+        }
+    );
 });
 
 //POST
