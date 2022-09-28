@@ -43,7 +43,6 @@ router.delete("/:id", (req, res, next) => {
                 res.status(200).json({
                     msg: data
                 });
-                res.send('Organization is deleted');
             }
         }
     );

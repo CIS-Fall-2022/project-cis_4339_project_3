@@ -135,10 +135,9 @@ router.delete("/:id", (req, res, next) => {
             if (error) {
                 return next(error);
             } else {
-                /*res.status(200).json({
+                res.status(200).json({
                     msg: data
-                });*/
-                res.send('Event is deleted');
+                });
             }
         }
     );
