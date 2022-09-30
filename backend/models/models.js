@@ -2,11 +2,20 @@ const uuid = require('uuid');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+//allow using a .env file
+require("dotenv").config();
+//declare organization_id as a default value for linking primary&event schema
+const ORG_ID = process.env.ORGANIZATION_ID;
+
 //TODO: possible revise primaryData Schema
 //collection for intakeData
 let primaryDataSchema = new Schema({
     _id: { type: String, default: uuid.v1 },
-    organizationID: {type: String},
+    organizationID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'organizationData',
+        default: ORG_ID
+    },
     firstName: {
         type: String,
         require: true
@@ -57,7 +66,11 @@ let primaryDataSchema = new Schema({
 //collection for eventData
 let eventDataSchema = new Schema({
     _id: { type: String, default: uuid.v1 },
-    organizationID: {type: String},
+    organizationID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'organizationData',
+        default: ORG_ID
+    },
     eventName: {
         type: String,
         require: true
@@ -96,9 +109,7 @@ let eventDataSchema = new Schema({
     collection: 'eventData'
 });
 
-//TODO: possible revision collection for organizationData
 let organizationDataSchema = new Schema({
-    _id: { type: String, default: uuid.v1 },
     organizationName: {
         type: String,
         require: true
