@@ -56,7 +56,7 @@ router.get("/search/", (req, res, next) => {
     );
 });
 
-//TODO: GET events for a single client
+// GET events for a single client
 router.get("/events/:id", (req, res, next) => { 
     eventdata.find( 
         { attendees: req.params.id }, 

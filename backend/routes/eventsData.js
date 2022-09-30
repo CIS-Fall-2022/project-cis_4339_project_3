@@ -109,7 +109,6 @@ router.put("/addAttendee/:id", (req, res, next) => {
                         { $push: { attendees: req.body.attendee } },
                         (error, data) => {
                             if (error) {
-                                consol
                                 return next(error);
                             } else {
                                 res.json(data);
@@ -124,9 +123,7 @@ router.put("/addAttendee/:id", (req, res, next) => {
     
 });
 
-
-
-//TODO: Add DELETE function for eventsData by id
+//DELETE an event by eventid
 router.delete("/:id", (req, res, next) => {
     //mongoose will use clientID of document
     eventdata.findOneAndDelete(
