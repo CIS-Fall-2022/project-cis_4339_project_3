@@ -140,4 +140,17 @@ router.delete("/:id", (req, res, next) => {
     );
 });
 
+//TODO: Create GET endpoint that will retrieve how many clients signedup for each event in the last 2 months
+router.get('/eventgraph', (req, res, next) => {
+    eventdata.aggregate([
+        
+    ], (error, data) => {
+        if (error) {
+            return next(error)
+        } else {
+            res.json(data);
+        }
+    });
+});
+
 module.exports = router;
