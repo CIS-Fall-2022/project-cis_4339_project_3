@@ -13,7 +13,13 @@ Setup a .env file with the following variables, e.g.:
 ```
 MONGO_URL = mongodb+srv://<username>:<password>@cluster0.abcdc.mongodb.net/dbname
 ```
-
+Organization_ID will be used as a default value in primary and event schemas. The value depends on the organization instance.
+```
+ORGANIZATION_ID = < retrieve id from organizationData collection >
+```
+```
+ORGANIZATION_NAME = < organizationName from organizationData collection >
+```
 ### Compiles and hot-reloads for development
 ```
 npm start
