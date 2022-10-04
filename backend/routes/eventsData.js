@@ -109,7 +109,6 @@ router.put("/addAttendee/:id", (req, res, next) => {
                         { $push: { attendees: req.body.attendee } },
                         (error, data) => {
                             if (error) {
-                                consol
                                 return next(error);
                             } else {
                                 res.json(data);
@@ -122,6 +121,40 @@ router.put("/addAttendee/:id", (req, res, next) => {
         }
     );
     
+});
+
+//DELETE an event by eventid
+router.delete("/:id", (req, res, next) => {
+    //mongoose will use clientID of document
+    eventdata.findOneAndDelete(
+        { _id: req.params.id }, 
+        (error, data) => {
+            if (error) {
+                return next(error);
+            } else {
+                res.status(200).json({
+                    msg: data
+                });
+            }
+        }
+    );
+});
+
+//TODO: Possible revision on aggregation
+//GET endpoint that will retrieve how many clients signedup for each event in the last 2 months
+router.get('/eventgraph', (req, res, next) => {
+    // SOURCE FOR DATE RANGE: https://stackoverflow.com/questions/7937233/how-do-i-calculate-the-date-in-javascript-three-months-prior-to-today
+    let currentDate = new Date();
+    eventdata.aggregate([
+        { $match: { date: { $gte: new Date(currentDate.setMonth(currentDate.getMonth() - 2)), $lte: new Date() } } },
+        {$project: { count: { $size:"$attendees" }}}
+    ], (error, data) => {
+        if (error) {
+            return next(error)
+        } else {
+            res.json(data);
+        }
+    });
 });
 
 module.exports = router;

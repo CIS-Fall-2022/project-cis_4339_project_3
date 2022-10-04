@@ -1,3 +1,4 @@
+const { application } = require("express");
 const express = require("express"); 
 const router = express.Router(); 
 
@@ -55,9 +56,18 @@ router.get("/search/", (req, res, next) => {
     );
 });
 
-//GET events for a single client
+// GET events for a single client
 router.get("/events/:id", (req, res, next) => { 
-    
+    eventdata.find( 
+        { attendees: req.params.id }, 
+        (error, data) => { 
+            if (error) {
+                return next(error);
+            } else {
+                res.json(data);
+            }
+        }
+    );
 });
 
 //POST
@@ -87,6 +97,24 @@ router.put("/:id", (req, res, next) => {
                 return next(error);
             } else {
                 res.json(data);
+            }
+        }
+    );
+});
+
+
+//DELETE a Client by ID
+router.delete("/:id", (req, res, next) => {
+    //mongoose will use clientID of document
+    primarydata.findOneAndDelete(
+        { _id: req.params.id }, 
+        (error, data) => {
+            if (error) {
+                return next(error);
+            } else {
+                res.status(200).json({
+                    msg: data
+                });
             }
         }
     );
