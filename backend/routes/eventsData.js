@@ -147,7 +147,7 @@ router.get('/eventgraph', (req, res, next) => {
     let currentDate = new Date();
     eventdata.aggregate([
         { $match: { date: { $gte: new Date(currentDate.setMonth(currentDate.getMonth() - 2)), $lte: new Date() } } },
-        {$project: { count: { $size:"$attendees" }}}
+        {$project: { count: { $size:"$attendees" }, eventName:1 }}
     ], (error, data) => {
         if (error) {
             return next(error)
