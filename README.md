@@ -8,6 +8,9 @@ This project uses NodeJS and MongoDB.
 ```
 cd backend
 ```
+```
+POSTMAN Documentation Link: https://documenter.getpostman.com/view/17857095/2s83tJGVm2
+```
 Follow instructions in backend README
 
 ## Frontend Vue 3 Application
