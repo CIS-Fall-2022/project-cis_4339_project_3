@@ -4,9 +4,14 @@ const router = express.Router();
 //importing data model schemas
 let { eventdata } = require("../models/models"); 
 
+//allow using a .env file
+require("dotenv").config();
+//used to filter events linked to an organization
+const ORG_ID = process.env.ORGANIZATION_ID;
+
 //GET all entries
 router.get("/", (req, res, next) => { 
-    eventdata.find( 
+    eventdata.find( { organizationID: ORG_ID },
         (error, data) => {
             if (error) {
                 return next(error);
@@ -33,9 +38,13 @@ router.get("/id/:id", (req, res, next) => {
 router.get("/search/", (req, res, next) => { 
     let dbQuery = "";
     if (req.query["searchBy"] === 'name') {
-        dbQuery = { eventName: { $regex: `^${req.query["eventName"]}`, $options: "i" } }
+        dbQuery = { 
+            organizationID: ORG_ID,
+            eventName: { $regex: `^${req.query["eventName"]}`, $options: "i" } 
+        }
     } else if (req.query["searchBy"] === 'date') {
         dbQuery = {
+            organizationID: ORG_ID,
             date:  req.query["eventDate"]
         }
     };
@@ -125,7 +134,7 @@ router.put("/addAttendee/:id", (req, res, next) => {
 
 //DELETE an event by eventid
 router.delete("/:id", (req, res, next) => {
-    //mongoose will use clientID of document
+    //mongoose will use eventID of document
     eventdata.findOneAndDelete(
         { _id: req.params.id }, 
         (error, data) => {
@@ -140,13 +149,32 @@ router.delete("/:id", (req, res, next) => {
     );
 });
 
-//TODO: Possible revision on aggregation
+//TODO: DELETE a client registered in attendees list with PUT request (Complete but need to check with professor)
+router.put("/deleteAttendee/:id", (req, res, next) => {
+    //delete attendee from attendees list
+    eventdata.updateOne(
+        { _id: req.params.id }, 
+        { $pull: { attendees: req.body.attendee } },
+        (error, data) => {
+            if (error) {
+                return next(error);
+            } else {
+                res.json(data);
+            }
+        }
+    );
+});
+
+
 //GET endpoint that will retrieve how many clients signedup for each event in the last 2 months
 router.get('/eventgraph', (req, res, next) => {
     // SOURCE FOR DATE RANGE: https://stackoverflow.com/questions/7937233/how-do-i-calculate-the-date-in-javascript-three-months-prior-to-today
     let currentDate = new Date();
     eventdata.aggregate([
-        { $match: { date: { $gte: new Date(currentDate.setMonth(currentDate.getMonth() - 2)), $lte: new Date() } } },
+        { $match: { 
+            organizationID: ORG_ID,
+            date: { $gte: new Date(currentDate.setMonth(currentDate.getMonth() - 2)), $lte: new Date() } 
+        } },
         {$project: { count: { $size:"$attendees" }, eventName:1 }}
     ], (error, data) => {
         if (error) {

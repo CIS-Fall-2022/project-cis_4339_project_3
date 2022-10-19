@@ -6,9 +6,14 @@ const router = express.Router();
 let { primarydata } = require("../models/models"); 
 let { eventdata } = require("../models/models"); 
 
+//allow using a .env file
+require("dotenv").config();
+//used to filter clients linked to an organization
+const ORG_ID = process.env.ORGANIZATION_ID;
+
 //GET all entries
 router.get("/", (req, res, next) => { 
-    primarydata.find( 
+    primarydata.find( { organizationID: ORG_ID },
         (error, data) => {
             if (error) {
                 return next(error);
@@ -38,9 +43,14 @@ router.get("/id/:id", (req, res, next) => {
 router.get("/search/", (req, res, next) => { 
     let dbQuery = "";
     if (req.query["searchBy"] === 'name') {
-        dbQuery = { firstName: { $regex: `^${req.query["firstName"]}`, $options: "i" }, lastName: { $regex: `^${req.query["lastName"]}`, $options: "i" } }
+        dbQuery = { 
+            organizationID: ORG_ID,
+            firstName: { $regex: `^${req.query["firstName"]}`, $options: "i" }, 
+            lastName: { $regex: `^${req.query["lastName"]}`, $options: "i" } 
+        }
     } else if (req.query["searchBy"] === 'number') {
         dbQuery = {
+            organizationID: ORG_ID,
             "phoneNumbers.primaryPhone": { $regex: `^${req.query["phoneNumbers.primaryPhone"]}`, $options: "i" }
         }
     };
