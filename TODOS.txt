@@ -1,5 +1,0 @@
-
-
-TODO(2): Primary/Event data routes are not filtering for organization
-
-TODO(3): This backend is not using an environment variable to be running as an instance for an organization.
