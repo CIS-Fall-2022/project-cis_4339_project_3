@@ -52,7 +52,7 @@ router.get("/search/", (req, res, next) => {
         dbQuery = {
             organizationID: ORG_ID,
             "phoneNumbers.primaryPhone": { $regex: `^${req.query["phoneNumbers.primaryPhone"]}`, $options: "i" }
-        }
+        }   // Removed reference to phone number array
     };
     primarydata.find( 
         dbQuery, 
