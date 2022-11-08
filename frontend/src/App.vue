@@ -43,6 +43,12 @@
                 Delete Event
               </router-link>
             </li>
+            <li>
+              <router-link to="/deleteClient">
+                <span style="position: relative; top: 6px" class="material-icons">search</span>
+                Delete Client
+              </router-link>
+            </li>
           </ul>
         </nav>
       </header>

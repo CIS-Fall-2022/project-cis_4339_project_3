@@ -205,13 +205,13 @@
             <button
               @click="deleteEvent"
               type="submit"
-              class="bg-red-700 text-white rounded"
+              class="border-3 border-red-700 bg-yellow-300 text-black font-bold rounded"
             >DELETE Event</button>
           </div>
           <div class="flex justify-between mt-10 mr-20">
             <button
               type="reset"
-              class="border border-red-700 bg-white text-red-700 rounded"
+              class="border-2 border-red-700 bg-green-100 text-black font-bold rounded"
               @click="$router.go(-1)"
             >Go back</button>
           </div>
@@ -322,16 +322,16 @@ export default {
     formattedDate(datetimeDB) {
       return DateTime.fromISO(datetimeDB).plus({ days: 1 }).toLocaleString();
     },
-    deleteEvent() {
-      this.event.services = this.checkedServices;
-      let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/${this.id}`;
-      axios.put(apiURL, this.event).then(() => {
-        alert("Update has been saved.");
-        this.$router.back().catch((error) => {
-          console.log(error);
-        });
-      });
-    },
+    // deleteEvent() {
+    //   this.event.services = this.checkedServices;
+    //   let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/${this.id}`;
+    //   axios.put(apiURL, this.event).then(() => {
+    //     alert("Update has been saved.");
+    //     this.$router.back().catch((error) => {
+    //       console.log(error);
+    //     });
+    //   });
+    // },
     editClient(clientID) {
       this.$router.push({ name: "updateclient", params: { id: clientID } });
     },

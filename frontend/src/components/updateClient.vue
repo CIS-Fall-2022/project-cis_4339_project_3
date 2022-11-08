@@ -23,12 +23,12 @@ export default {
         middleName: "",
         lastName: "",
         email: "",
-        phoneNumbers: [
+        phoneNumbers:
           {
             primaryPhone: "",
             secondaryPhone: "",
           },
-        ],
+
         address: {
           line1: "",
           line2: "",
@@ -56,10 +56,10 @@ export default {
         this.client.middleName = data.middleName;
         this.client.lastName = data.lastName;
         this.client.email = data.email;
-        this.client.phoneNumbers[0].primaryPhone =
-          data.phoneNumbers[0].primaryPhone;
-        this.client.phoneNumbers[0].secondaryPhone =
-          data.phoneNumbers[0].secondaryPhone;
+        this.client.phoneNumbers.primaryPhone =
+          data.phoneNumbers.primaryPhone;
+        this.client.phoneNumbers.secondaryPhone =
+          data.phoneNumbers.secondaryPhone;
         this.client.address.line1 = data.address.line1;
         this.client.address.line2 = data.address.line2;
         this.client.address.city = data.address.city;
@@ -72,7 +72,7 @@ export default {
           `/eventdata/client/${this.$route.params.id}`
       )
       .then((resp) => {
-        let data = resp.data;
+        // let data = resp.data;
         resp.data.forEach((event) => {
           this.clientEvents.push({
             eventName: event.eventName,
@@ -126,6 +126,30 @@ export default {
         });
       });
     },
+    //----------------------------------------------------
+    // removeFromEvent() {
+    //   this.eventsChosen.forEach((event) => {
+    //     let apiURL =
+    //         import.meta.env.VITE_ROOT_API + `/eventdata/addAttendee/` + event._id;
+    //     axios.put(apiURL, { attendee: this.$route.params.id }).then(() => {
+    //       this.clientEvents = [];
+    //       axios
+    //           .get(
+    //               import.meta.env.VITE_ROOT_API +
+    //               `/eventdata/client/${this.$route.params.id}`
+    //           )
+    //           .then((resp) => {
+    //             let data = resp.data;
+    //             for (let i = 0; i < data.length; i++) {
+    //               this.clientEvents.push({
+    //                 eventName: data[i].eventName,
+    //               });
+    //             }
+    //           });
+    //     });
+    //   });
+    // },
+    //----------------------------------------------------
   },
   validations() {
     return {
@@ -133,11 +157,11 @@ export default {
         firstName: { required, alpha },
         lastName: { required, alpha },
         email: { email },
-        phoneNumbers: [
+        phoneNumbers:
           {
             primaryPhone: { required, numeric },
           },
-        ],
+
       },
     };
   },
@@ -235,12 +259,12 @@ export default {
                 type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-                v-model="client.phoneNumbers[0].primaryPhone"
+                v-model="client.phoneNumbers.primaryPhone"
               />
-              <span class="text-black" v-if="v$.client.phoneNumbers[0].primaryPhone.$error">
+              <span class="text-black" v-if="v$.client.phoneNumbers.primaryPhone.$error">
                 <p
                   class="text-red-700"
-                  v-for="error of v$.client.phoneNumbers[0].primaryPhone.$errors"
+                  v-for="error of v$.client.phoneNumbers.primaryPhone.$errors"
                   :key="error.$uid"
                 >{{ error.$message }}!</p>
               </span>
@@ -254,13 +278,13 @@ export default {
                 type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-                v-model="client.phoneNumbers[0].secondaryPhone"
+                v-model="client.phoneNumbers.secondaryPhone"
               />
             </label>
           </div>
         </div>
 
-        <!-- grid container -->
+        <!-- grid container Address Details-->
         <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
           <h2 class="text-2xl font-bold">Address Details</h2>
           <!-- form field -->
@@ -323,7 +347,7 @@ export default {
           <div></div>
         </div>
 
-        <!-- grid container -->
+        <!-- grid container Buttons -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
           <div class="flex justify-between mt-10 mr-20">
             <button
@@ -343,7 +367,7 @@ export default {
 
         <hr class="mt-10 mb-10" />
 
-        <!-- Client Event Information -->
+        <!-- Client Event Information List -->
         <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
           <h2 class="text-2xl font-bold">Events for Client</h2>
 
@@ -366,12 +390,14 @@ export default {
 
           <div class="flex flex-col">
             <label class="typo__label">Select Events to be added</label>
+            <!-- added 'track-by' parameter to the multiselect to be able to delete events in the list -->
             <VueMultiselect
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
               v-model="eventsChosen"
               :options="eventData"
               :multiple="true"
               label="eventName"
+              track-by="eventName"
             ></VueMultiselect>
             <div class="flex justify-between">
               <button
@@ -380,8 +406,19 @@ export default {
                 class="mt-5 bg-red-700 text-white rounded"
               >Add Client to Events</button>
             </div>
+
           </div>
+
         </div>
+<!--        &lt;!&ndash; Added button to remove client from Event &ndash;&gt;-->
+<!--        <label class="italic text-wrap  d-inline-flex">Select Event from the list</label>-->
+<!--        <div class="flex justify-between">-->
+<!--          <button-->
+<!--              @click="removeFromEvent"-->
+<!--              type="submit"-->
+<!--              class="bg-red-700 text-white rounded"-->
+<!--          >Remove Client From Event</button>-->
+<!--        </div>-->
       </form>
     </div>
   </main>

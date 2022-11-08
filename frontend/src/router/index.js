@@ -51,6 +51,12 @@ const routes = [
         name: 'deleteDetails',
         props: true,
         component: () => import('../components/deleteDetails.vue')
+    },
+    {
+        path: '/deleteClient/',
+        name: 'deleteClient',
+        props: true,
+        component: () => import('../components/deleteClient.vue')
     }
 ]
 const router = createRouter({

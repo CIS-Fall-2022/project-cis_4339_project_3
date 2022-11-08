@@ -5,3 +5,33 @@
 button {
     padding: 10px;
 }
+
+.bg-yellow-300 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(253 224 71 / var(--tw-bg-opacity))
+}
+
+.bg-green-300 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(51 204 51 / var(--tw-bg-opacity))
+}
+
+.border-1 {
+    border-width: 1px
+}
+
+.border-2 {
+    border-width: 2px
+}
+
+.border-3 {
+    border-width: 3px
+}
+
+.border-4 {
+    border-width: 4px
+}
+
+.border-5 {
+    border-width: 5px
+}
