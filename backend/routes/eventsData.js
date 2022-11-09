@@ -150,11 +150,12 @@ router.delete("/:id", (req, res, next) => {
 });
 
 //TODO: DELETE a client registered in attendees list with PUT request (Complete but need to check with professor)
-router.put("/deleteAttendee/:id", (req, res, next) => {
+router.put("/deleteAttendee/:eventId/:attendeeId", (req, res, next) => {
     //delete attendee from attendees list
+    // Updated the function to add both event and attendee IDs (working)
     eventdata.updateOne(
-        { _id: req.params.id }, 
-        { $pull: { attendees: req.body.attendee } },
+        { _id: req.params.eventId },
+        { $pull: { attendees: req.params.attendeeId } },
         (error, data) => {
             if (error) {
                 return next(error);

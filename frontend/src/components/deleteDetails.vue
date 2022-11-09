@@ -200,51 +200,58 @@
         </div>
 
         <!-- grid container -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
-          <div class="flex justify-between mt-10 mr-20">
+        <div class="grid grid-cols-2   ">
+          <div class="flex justify-end mt-10 mr-20">
             <button
               @click="deleteEvent"
               type="submit"
-              class="border-3 border-red-700 bg-yellow-300 text-black font-bold rounded"
+              class="bg-red-700 text-white rounded"
             >DELETE Event</button>
           </div>
           <div class="flex justify-between mt-10 mr-20">
             <button
               type="reset"
-              class="border-2 border-red-700 bg-green-100 text-black font-bold rounded"
+              class="border border-red-700 text-black rounded"
               @click="$router.go(-1)"
             >Go back</button>
           </div>
         </div>
 
-        <hr class="mt-10 mb-10" />
+
 
         <!-- grid container -->
+        <h3 class="italic text-center">All attendees must be removed before event can be deleted</h3>
+        <hr class="mt-10 mb-10" />
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
           <div>
             <h2 class="text-2xl font-bold">List of Attendees</h2>
-            <h3 class="italic">Click table row to edit/display an entry</h3>
+            <h3 class="italic">Click table row to delete an attendee from event</h3>
           </div>
           <div class="flex flex-col col-span-2">
             <table class="min-w-full shadow-md rounded">
               <thead class="bg-gray-50 text-xl">
                 <tr>
                   <th class="p-4 text-left">Name</th>
-                  <th class="p-4 text-left">City</th>
                   <th class="p-4 text-left">Phone Number</th>
+                  <th class="p-4 text-left">City</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-300">
                 <tr
-                  @click="editClient(client.attendeeID)"
                   v-for="client in attendeeData"
                   :key="client._id"
                 >
                   <td
                     class="p-2 text-left"
                   >{{ client.attendeeFirstName + " " + client.attendeeLastName }}</td>
-                  <td class="p-2 text-left">{{ client.attendeeCity }}</td>
                   <td class="p-2 text-left">{{ client.attendeePhoneNumber }}</td>
+                  <td class="p-2 text-left">{{ client.attendeeCity }}</td>
+                  <td><button
+                      class="border border-red-700 bg-yellow-300 text-black rounded p-1"
+                      @click="removeClient(client.attendeeID)"
+                      Type="submit"
+                  >Remove</button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -312,7 +319,7 @@ export default {
                 attendeeFirstName: data.firstName,
                 attendeeLastName: data.lastName,
                 attendeeCity: data.address.city,
-                attendeePhoneNumber: data.phoneNumbers[0].primaryPhone,
+                attendeePhoneNumber: data.phoneNumbers.primaryPhone,
               });
             });
         }
@@ -322,18 +329,34 @@ export default {
     formattedDate(datetimeDB) {
       return DateTime.fromISO(datetimeDB).plus({ days: 1 }).toLocaleString();
     },
-    // deleteEvent() {
-    //   this.event.services = this.checkedServices;
-    //   let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/${this.id}`;
-    //   axios.put(apiURL, this.event).then(() => {
-    //     alert("Update has been saved.");
-    //     this.$router.back().catch((error) => {
-    //       console.log(error);
-    //     });
-    //   });
-    // },
+    deleteEvent() {
+      this.event.services = this.checkedServices;
+      let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/${this.id}`;
+      let lenArray = this.checkedServices;
+      if (lenArray.length == 0) {
+        axios.put(apiURL, this.event).then(() => {
+          alert("Update has ++ been saved.");
+          this.$router.back().catch((error) => {
+            console.log(error);
+          });
+        });
+      } else {
+        let text = "All clients must be removed before Event can be deleted.";
+        if (alert(text) == true) {
+          this.$router.go()
+        }
+      }
+    },
     editClient(clientID) {
       this.$router.push({ name: "updateclient", params: { id: clientID } });
+    },
+    // added function to remove attendees from event
+    removeClient(clientID) {
+      let text = "Are you sure you want to remove this client from this event?\n\nClick OK to delete or Cancel to go back.";
+      if (confirm(text) == true) {
+        const apiURL = import.meta.env.VITE_ROOT_API + `/eventData/deleteAttendee/${this.id}/${clientID}`;
+        axios.put(apiURL).then(this.$router.go(-1)); // this will refresh the page to show the client was removed from event list
+      }
     },
   },
   // sets validations for the various data properties
