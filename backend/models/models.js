@@ -110,10 +110,16 @@ let eventDataSchema = new Schema({
 });
 
 let organizationDataSchema = new Schema({
+    _id: { type: String, default: uuid.v1 },
+    organizationID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'organizationData',
+        default: ORG_ID
+    },
     organizationName: {
         type: String,
         require: true
-    }
+    },
 }, {
     collection: 'organizationData'
 });

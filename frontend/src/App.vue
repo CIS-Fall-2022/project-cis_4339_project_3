@@ -14,6 +14,12 @@
               </router-link>
             </li>
             <li>
+              <router-link to="/organizationform">
+                <span style="position: relative; top: 6px" class="material-icons">business</span>
+                Organization Intake Form
+              </router-link>
+            </li>
+            <li>
               <router-link to="/intakeform">
                 <span style="position: relative; top: 6px" class="material-icons">people</span>
                 Client Intake Form
@@ -23,6 +29,12 @@
               <router-link to="/eventform">
                 <span style="position: relative; top: 6px" class="material-icons">event</span>
                 Create Event
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/findOrganization">
+                <span style="position: relative; top: 6px" class="material-icons">search</span>
+                Find Organization
               </router-link>
             </li>
             <li>
@@ -38,15 +50,21 @@
               </router-link>
             </li>
             <li>
-              <router-link to="/deleteEvent">
-                <span style="position: relative; top: 6px" class="material-icons">search</span>
-                Delete Event
+              <router-link to="/deleteOrganization">
+                <span style="position: relative; top: 6px" class="material-icons text-black">search</span>
+                <text class="text-black">Delete Organization</text>
               </router-link>
             </li>
             <li>
               <router-link to="/deleteClient">
-                <span style="position: relative; top: 6px" class="material-icons">search</span>
-                Delete Client
+                <span style="position: relative; top: 6px" class="material-icons text-black">search</span>
+                <text class="text-black">Delete Client</text>
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/deleteEvent">
+                <span style="position: relative; top: 6px" class="material-icons text-black">search</span>
+                <text class="text-black">Delete Event</text>
               </router-link>
             </li>
           </ul>

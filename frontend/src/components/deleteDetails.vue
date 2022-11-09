@@ -329,13 +329,14 @@ export default {
     formattedDate(datetimeDB) {
       return DateTime.fromISO(datetimeDB).plus({ days: 1 }).toLocaleString();
     },
+    // added delete event method
     deleteEvent() {
       this.event.services = this.checkedServices;
       let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/${this.id}`;
-      let lenArray = this.checkedServices;
-      if (lenArray.length == 0) {
-        axios.put(apiURL, this.event).then(() => {
-          alert("Update has ++ been saved.");
+      let lenArray = this.attendeeIDs;
+      if (lenArray.length === 0) {
+        axios.delete(apiURL, this.event).then(() => {
+          alert("Event has been deleted.");
           this.$router.back().catch((error) => {
             console.log(error);
           });

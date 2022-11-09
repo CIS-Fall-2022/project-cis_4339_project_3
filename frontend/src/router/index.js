@@ -8,10 +8,21 @@ const routes = [
         component: () => import('../components/dashboard.vue')
     },
     {
+        path: '/organizationform',
+        name: 'organizationForm',
+        props: true,
+        component: () => import('../components/organizationForm.vue')
+    },
+    {
         path: '/intakeform',
         name: 'intakeForm',
         props: true,
         component: () => import('../components/intakeForm.vue')
+    },
+    {
+        path: '/findorganization',
+        name: 'findOrganization',
+        component: () => import('../components/findOrganization.vue')
     },
     {
         path: '/findclient',
@@ -51,6 +62,11 @@ const routes = [
         name: 'deleteDetails',
         props: true,
         component: () => import('../components/deleteDetails.vue')
+    },
+    {
+        path: '/deleteorganization',
+        name: 'deleteOrganization',
+        component: () => import('../components/deleteOrganization.vue')
     },
     {
         path: '/deleteClient/',
