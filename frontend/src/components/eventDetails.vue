@@ -193,7 +193,7 @@
             <button
               @click="handleEventUpdate"
               type="submit"
-              class="bg-red-700 text-white rounded"
+              class="bg-green-700 text-white rounded"
             >Update Event</button>
           </div>
           <div class="flex justify-between mt-10 mr-20">
@@ -220,19 +220,18 @@
                   <th class="p-4 text-left">Name</th>
                   <th class="p-4 text-left">City</th>
                   <th class="p-4 text-left">Phone Number</th>
+                  <th class="p-4 text-left">Action</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-300">
-                <tr
-                  @click="editClient(client.attendeeID)"
-                  v-for="client in attendeeData"
-                  :key="client._id"
-                >
-                  <td
-                    class="p-2 text-left"
-                  >{{ client.attendeeFirstName + " " + client.attendeeLastName }}</td>
-                  <td class="p-2 text-left">{{ client.attendeeCity }}</td>
-                  <td class="p-2 text-left">{{ client.attendeePhoneNumber }}</td>
+                <tr v-for="client in attendeeData" :key="client._id">
+                  <td class="p-2 text-left"> {{ client.attendeeFirstName + " " + client.attendeeLastName }} </td>
+                  <td class="p-2 text-left"> {{ client.attendeeCity }} </td>
+                  <td class="p-2 text-left"> {{ client.attendeePhoneNumber }} </td>
+                  <td>
+                    <button @click="editClient(client.attendeeID)" class="bg-green-700 text-white rounded">Edit</button>
+                    <button @click.prevent="unassignClient(client.attendeeID)" class="bg-red-700 text-white rounded">Unassign</button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -323,6 +322,19 @@ export default {
     },
     editClient(clientID) {
       this.$router.push({ name: "updateclient", params: { id: clientID } });
+    },
+    //TODO: Remove client from attendee list
+    unassignClient(clientID) {
+      let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/deleteAttendee/${this.$route.params.id}`;
+      let indexOfArrayItem = this.attendeeData.findIndex(i => i._id === clientID);
+
+      if (window.confirm("Do you really want to Unassign?")) {
+          axios.put(apiURL, { attendee: clientID }).then(() => {
+              this.attendeeData.splice(indexOfArrayItem, 1);
+          }).catch(error => {
+              console.log(error)
+          });
+      }
     },
   },
   // sets validations for the various data properties
