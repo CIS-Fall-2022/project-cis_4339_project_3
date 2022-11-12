@@ -373,7 +373,7 @@ export default {
                   <td class="p-2 text-left">{{ event.eventName }}</td>
                   <td class="p-2 text-left">{{ formattedDate(event.eventDate) }}</td>
                   <td>
-                    <button @click.prevent="unassignClient(event._id)" class="bg-red-700 text-white rounded">Unassign</button>
+                    <button @click.prevent="unassignClient(event._id)" class="bg-red-700 text-white rounded">Unassign Client</button>
                   </td>
                 </tr>
               </tbody>
