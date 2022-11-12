@@ -81,13 +81,18 @@
               <th class="p-4 text-left">Name</th>
               <th class="p-4 text-left">Phone number</th>
               <th class="p-4 text-left">City</th>
+              <th class="p-4 text-left">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-300">
-            <tr @click="editClient(client._id)" v-for="client in queryData" :key="client._id">
+            <tr v-for="client in queryData" :key="client._id">
               <td class="p-2 text-left">{{ client.firstName + " " + client.lastName }}</td>
               <td class="p-2 text-left">{{ client.phoneNumbers.primaryPhone }}</td>
               <td class="p-2 text-left">{{ client.address.city }}</td>
+              <td>
+                <button @click="editClient(client._id)" class="bg-green-700 text-white rounded">Edit</button>
+                <button @click.prevent="deleteClient(client._id)" class="bg-red-700 text-white rounded">Delete</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -148,6 +153,19 @@ export default {
     },
     editClient(clientID) {
       this.$router.push({ name: "updateclient", params: { id: clientID } });
+    },
+    //DELETE client method
+    deleteClient(clientID) {
+      let apiURL = import.meta.env.VITE_ROOT_API + `/primarydata/${clientID}`;
+      let indexOfArrayItem = this.queryData.findIndex(i => i._id === clientID);
+
+      if (window.confirm("Do you really want to delete?")) {
+          axios.delete(apiURL).then(() => {
+              this.queryData.splice(indexOfArrayItem, 1);
+          }).catch(error => {
+              console.log(error)
+          });
+      }
     },
   },
 };

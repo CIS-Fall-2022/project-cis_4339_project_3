@@ -69,13 +69,18 @@
               <th class="p-4 text-left">Event Name</th>
               <th class="p-4 text-left">Event Date</th>
               <th class="p-4 text-left">Event Address</th>
+              <th class="p-4 text-left">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-300">
-            <tr @click="editEvent(event._id)" v-for="event in queryData" :key="event._id">
+            <tr v-for="event in queryData" :key="event._id">
               <td class="p-2 text-left">{{ event.eventName }}</td>
               <td class="p-2 text-left">{{ formattedDate(event.date) }}</td>
               <td class="p-2 text-left">{{ event.address.line1 }}</td>
+              <td>
+                <button @click="editEvent(event._id)" class="bg-green-700 text-white rounded">Edit</button>
+                <button @click.prevent="deleteEvent(event._id)" class="bg-red-700 text-white rounded">Delete</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -83,6 +88,7 @@
     </div>
   </main>
 </template>
+
 <script>
 import { DateTime } from "luxon";
 import axios from "axios";
@@ -140,6 +146,19 @@ export default {
     editEvent(eventID) {
       this.$router.push({ name: "eventdetails", params: { id: eventID } });
     },
+    //DELETE event method
+    deleteEvent(eventID) {
+      let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/${eventID}`;
+      let indexOfArrayItem = this.queryData.findIndex(i => i._id === eventID);
+
+      if (window.confirm("Do you really want to delete?")) {
+          axios.delete(apiURL).then(() => {
+              this.queryData.splice(indexOfArrayItem, 1);
+          }).catch(error => {
+              console.log(error)
+          });
+      }
+    }
   },
 };
 </script>

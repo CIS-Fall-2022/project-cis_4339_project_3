@@ -242,6 +242,7 @@
     </div>
   </main>
 </template>
+
 <script>
 import useVuelidate from "@vuelidate/core";
 import { required, email, alpha, numeric } from "@vuelidate/validators";
@@ -300,7 +301,7 @@ export default {
                 attendeeFirstName: data.firstName,
                 attendeeLastName: data.lastName,
                 attendeeCity: data.address.city,
-                attendeePhoneNumber: data.phoneNumbers[0].primaryPhone,
+                attendeePhoneNumber: data.phoneNumbers.primaryPhone,
               });
             });
         }

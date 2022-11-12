@@ -73,6 +73,7 @@ export default {
         let data = resp.data;
         resp.data.forEach((event) => {
           this.clientEvents.push({
+            _id: event._id,
             eventName: event.eventName,
             eventDate: event.date,
           });
@@ -118,11 +119,25 @@ export default {
               for (let i = 0; i < data.length; i++) {
                 this.clientEvents.push({
                   eventName: data[i].eventName,
+                  eventDate: data[i].date,
                 });
               }
             });
         });
       });
+    },
+    //TODO: Unassign Client from event
+    unassignClient(eventID) {
+      let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/deleteAttendee/${eventID}`;
+      let indexOfArrayItem = this.clientEvents.findIndex(i => i._id === eventID);
+
+      if (window.confirm("Do you really want to Unassign?")) {
+          axios.put(apiURL, { attendee: this.$route.params.id }).then(() => {
+              this.clientEvents.splice(indexOfArrayItem, 1);
+          }).catch(error => {
+              console.log(error)
+          });
+      }
     },
   },
   validations() {
@@ -139,6 +154,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <main>
     <h1 class="font-bold text-4xl text-red-700 tracking-widest text-center mt-10">Update Client</h1>
@@ -325,7 +341,7 @@ export default {
             <button
               @click="handleClientUpdate"
               type="submit"
-              class="bg-red-700 text-white rounded"
+              class="bg-green-700 text-white rounded"
             >Update Client</button>
           </div>
           <div class="flex justify-between mt-10 mr-20">
@@ -349,12 +365,16 @@ export default {
                 <tr>
                   <th class="p-4 text-left">Event Name</th>
                   <th class="p-4 text-left">Date</th>
+                  <th class="p-4 text-left">Action</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-300">
                 <tr v-for="event in clientEvents" :key="event._id">
                   <td class="p-2 text-left">{{ event.eventName }}</td>
                   <td class="p-2 text-left">{{ formattedDate(event.eventDate) }}</td>
+                  <td>
+                    <button @click.prevent="unassignClient(event._id)" class="bg-red-700 text-white rounded">Unassign</button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -373,7 +393,7 @@ export default {
               <button
                 @click="addToEvent"
                 type="submit"
-                class="mt-5 bg-red-700 text-white rounded"
+                class="mt-5 bg-green-700 text-white rounded"
               >Add Client to Events</button>
             </div>
           </div>
