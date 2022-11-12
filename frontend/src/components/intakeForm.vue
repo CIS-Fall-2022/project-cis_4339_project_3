@@ -16,12 +16,10 @@ export default {
         middleName: "",
         lastName: "",
         email: "",
-        phoneNumbers: [
-          {
-            primaryPhone: "",
-            secondaryPhone: "",
-          },
-        ],
+        phoneNumbers: {
+          primaryPhone: "",
+          altPhone: "",
+        },
         address: {
           line1: "",
           line2: "",
@@ -49,12 +47,10 @@ export default {
               middleName: "",
               lastName: "",
               email: "",
-              phoneNumbers: [
-                {
-                  primaryPhone: "",
-                  seondaryPhone: "",
-                },
-              ],
+              phoneNumbers: {
+                primaryPhone: "",
+                altPhone: ""
+              },
               address: {
                 line1: "",
                 line2: "",
@@ -80,11 +76,9 @@ export default {
         address: {
           city: { required },
         },
-        phoneNumbers: [
-          {
+        phoneNumbers: {
             primaryPhone: { required, numeric },
           },
-        ],
       },
     };
   },
@@ -182,12 +176,12 @@ export default {
                 type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-                v-model="client.phoneNumbers[0].primaryPhone"
+                v-model="client.phoneNumbers.primaryPhone"
               />
-              <span class="text-black" v-if="v$.client.phoneNumbers[0].primaryPhone.$error">
+              <span class="text-black" v-if="v$.client.phoneNumbers.primaryPhone.$error">
                 <p
                   class="text-red-700"
-                  v-for="error of v$.client.phoneNumbers[0].primaryPhone.$errors"
+                  v-for="error of v$.client.phoneNumbers.primaryPhone.$errors"
                   :key="error.$uid"
                 >{{ error.$message }}!</p>
               </span>
@@ -201,7 +195,7 @@ export default {
                 type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-                v-model="client.phoneNumbers[0].secondaryPhone"
+                v-model="client.phoneNumbers.altPhone"
               />
             </label>
           </div>
