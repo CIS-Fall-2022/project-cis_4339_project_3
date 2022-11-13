@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const ObjectId = require('mongoose').Types.ObjectId
 
 //importing data model schemas
 let { eventdata } = require("../models/models"); 
@@ -171,10 +172,11 @@ router.get('/eventgraph', (req, res, next) => {
     // SOURCE FOR DATE RANGE: https://stackoverflow.com/questions/7937233/how-do-i-calculate-the-date-in-javascript-three-months-prior-to-today
     let currentDate = new Date();
     eventdata.aggregate([
-        { $match: { 
-            organizationID: ORG_ID,
+        { $match: {
+            organizationID: ObjectId(ORG_ID),
             date: { $gte: new Date(currentDate.setMonth(currentDate.getMonth() - 2)), $lte: new Date() } 
         } },
+        //{ $match: { organizationID: ObjectId(ORG_ID)} },
         {$project: { count: { $size:"$attendees" }, eventName:1 }}
     ], (error, data) => {
         if (error) {
