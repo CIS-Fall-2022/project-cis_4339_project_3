@@ -63,6 +63,8 @@ export default {
           .catch((error) => {
             console.log(error);
           });
+      } else {
+        alert('Form submission failed. Please check your entries!');
       }
     },
   },
@@ -71,14 +73,17 @@ export default {
     return {
       client: {
         firstName: { required, alpha },
+        middleName: { alpha },
         lastName: { required, alpha },
         email: { email },
         address: {
           city: { required },
+          county: { alpha },
         },
         phoneNumbers: {
-            primaryPhone: { required, numeric },
-          },
+          primaryPhone: { required, numeric },
+          altPhone: { numeric }
+        },
       },
     };
   },
@@ -113,7 +118,7 @@ export default {
             </label>
           </div>
 
-          <!-- form field -->
+          <!-- form field MIDDLE NAME -->
           <div class="flex flex-col">
             <label class="block">
               <span class="text-gray-700">Middle Name</span>
@@ -123,6 +128,13 @@ export default {
                 placeholder
                 v-model="client.middleName"
               />
+              <span class="text-black" v-if="v$.client.middleName.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.client.middleName.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
 
@@ -197,6 +209,13 @@ export default {
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                 v-model="client.phoneNumbers.altPhone"
               />
+              <span class="text-black" v-if="v$.client.phoneNumbers.altPhone.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.client.phoneNumbers.altPhone.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
         </div>
@@ -239,7 +258,7 @@ export default {
               <span class="text-black" v-if="v$.client.address.city.$error">
                 <p
                   class="text-red-700"
-                  v-for="error of v$.client.address.$errors"
+                  v-for="error of v$.client.address.city.$errors"
                   :key="error.$uid"
                 >{{ error.$message }}!</p>
               </span>
@@ -255,6 +274,13 @@ export default {
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 v-model="client.address.county"
               />
+              <span class="text-black" v-if="v$.client.address.county.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.client.address.county.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
           <!-- form field -->

@@ -71,7 +71,7 @@ export default {
       )
       .then((resp) => {
         let data = resp.data;
-        resp.data.forEach((event) => {
+        data.forEach((event) => {
           this.clientEvents.push({
             _id: event._id,
             eventName: event.eventName,
@@ -94,14 +94,21 @@ export default {
     formattedDate(datetimeDB) {
       return DateTime.fromISO(datetimeDB).plus({ days: 1 }).toLocaleString();
     },
-    handleClientUpdate() {
-      let apiURL = import.meta.env.VITE_ROOT_API + `/primarydata/${this.id}`;
-      axios.put(apiURL, this.client).then(() => {
-        alert("Update has been saved.");
-        this.$router.back().catch((error) => {
-          console.log(error);
+    async handleClientUpdate() {
+      // Check to see if there are any errors in validation
+      const isFormCorrect = await this.v$.$validate();
+      // If no errors found. isFormCorrect = True then the form is submitted
+      if (isFormCorrect) {
+        let apiURL = import.meta.env.VITE_ROOT_API + `/primarydata/${this.id}`;
+        axios.put(apiURL, this.client).then(() => {
+          alert("Update has been saved.");
+          this.$router.back().catch((error) => {
+            console.log(error);
+          });
         });
-      });
+      } else {
+        alert('Update submission failed. Please check your entries!');
+      }
     },
     addToEvent() {
       // check if chosen Events are already assigned to client and alert user to remove
@@ -154,10 +161,16 @@ export default {
     return {
       client: {
         firstName: { required, alpha },
+        middleName: { alpha },
         lastName: { required, alpha },
         email: { email },
+        address: {
+          city: { required },
+          county: { alpha },
+        },
         phoneNumbers: {
           primaryPhone: { required, numeric },
+          altPhone: { numeric }
         },
       },
     };
@@ -205,6 +218,13 @@ export default {
                 placeholder
                 v-model="client.middleName"
               />
+              <span class="text-black" v-if="v$.client.middleName.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.client.middleName.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
 
@@ -278,6 +298,13 @@ export default {
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                 v-model="client.phoneNumbers.altPhone"
               />
+              <span class="text-black" v-if="v$.client.phoneNumbers.altPhone.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.client.phoneNumbers.altPhone.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
         </div>
@@ -317,6 +344,13 @@ export default {
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 v-model="client.address.city"
               />
+              <span class="text-black" v-if="v$.client.address.city.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.client.address.city.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
           <div></div>
@@ -329,6 +363,13 @@ export default {
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 v-model="client.address.county"
               />
+              <span class="text-black" v-if="v$.client.address.county.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.client.address.county.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
           <!-- form field -->

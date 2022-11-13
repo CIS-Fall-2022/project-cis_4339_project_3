@@ -254,6 +254,8 @@ export default {
           .catch((error) => {
             console.log(error);
           });
+      } else {
+        alert("Form submission failed. Please check your entries!");
       }
     },
   },
