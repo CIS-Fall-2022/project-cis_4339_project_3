@@ -383,7 +383,7 @@ export default {
               :options="eventData"
               :multiple="true"
               label="eventName"
-              track-by="eventName"
+              track-by="_id"
             ></VueMultiselect>
             <div class="flex justify-between">
               <button
