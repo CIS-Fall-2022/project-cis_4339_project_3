@@ -105,15 +105,10 @@ export default {
     },
     addToEvent() {
       this.eventsChosen.forEach((event) => {
-        let apiURL =
-          import.meta.env.VITE_ROOT_API + `/eventdata/addAttendee/` + event._id;
+        let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/addAttendee/` + event._id;
         axios.put(apiURL, { attendee: this.$route.params.id }).then(() => {
           this.clientEvents = [];
-          axios
-            .get(
-              import.meta.env.VITE_ROOT_API +
-                `/eventdata/client/${this.$route.params.id}`
-            )
+          axios.get(import.meta.env.VITE_ROOT_API + `/eventdata/client/${this.$route.params.id}`)
             .then((resp) => {
               let data = resp.data;
               for (let i = 0; i < data.length; i++) {
@@ -126,7 +121,7 @@ export default {
         });
       });
     },
-    //TODO: Unassign Client from event
+    // Unassign Client from event
     unassignClient(eventID) {
       let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/deleteAttendee/${eventID}`;
       let indexOfArrayItem = this.clientEvents.findIndex(i => i._id === eventID);
@@ -388,6 +383,7 @@ export default {
               :options="eventData"
               :multiple="true"
               label="eventName"
+              track-by="eventName"
             ></VueMultiselect>
             <div class="flex justify-between">
               <button
