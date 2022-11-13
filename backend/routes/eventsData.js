@@ -150,7 +150,7 @@ router.delete("/:id", (req, res, next) => {
     );
 });
 
-// DELETE a client registered in attendees list with PUT request 
+// Remove a client registered in attendees list with PUT request 
 router.put("/deleteAttendee/:eventId", (req, res, next) => {
     //delete attendee from attendees list
     eventdata.updateOne(
@@ -176,7 +176,6 @@ router.get('/eventgraph', (req, res, next) => {
             organizationID: ObjectId(ORG_ID),
             date: { $gte: new Date(currentDate.setMonth(currentDate.getMonth() - 2)), $lte: new Date() } 
         } },
-        //{ $match: { organizationID: ObjectId(ORG_ID)} },
         {$project: { count: { $size:"$attendees" }, eventName:1 }}
     ], (error, data) => {
         if (error) {
