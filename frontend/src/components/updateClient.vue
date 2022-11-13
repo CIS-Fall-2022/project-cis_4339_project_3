@@ -104,22 +104,37 @@ export default {
       });
     },
     addToEvent() {
-      this.eventsChosen.forEach((event) => {
-        let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/addAttendee/` + event._id;
-        axios.put(apiURL, { attendee: this.$route.params.id }).then(() => {
-          this.clientEvents = [];
-          axios.get(import.meta.env.VITE_ROOT_API + `/eventdata/client/${this.$route.params.id}`)
-            .then((resp) => {
-              let data = resp.data;
-              for (let i = 0; i < data.length; i++) {
-                this.clientEvents.push({
-                  eventName: data[i].eventName,
-                  eventDate: data[i].date,
-                });
-              }
-            });
-        });
+      // check if chosen Events are already assigned to client and alert user to remove
+      let duplicateEvents = this.eventsChosen;
+      let validEvents = true;
+      this.clientEvents.forEach((event) => {
+        for (let i = 0; i < duplicateEvents.length; i++) {
+          if (duplicateEvents[i]._id === event._id) {
+            alert("Client is already signed up for " + event.eventName + " Please Remove!");
+            validEvents = !validEvents;
+          }
+        }
       });
+      // if no duplicate events then can assign client to chosen events
+      if (validEvents) {
+        this.eventsChosen.forEach((event) => {
+          let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/addAttendee/` + event._id;
+          axios.put(apiURL, { attendee: this.$route.params.id }).then(() => {
+            this.clientEvents = [];
+            axios.get(import.meta.env.VITE_ROOT_API + `/eventdata/client/${this.$route.params.id}`)
+              .then((resp) => {
+                let data = resp.data;
+                for (let i = 0; i < data.length; i++) {
+                  this.clientEvents.push({
+                    _id: data[i]._id,
+                    eventName: data[i].eventName,
+                    eventDate: data[i].date,
+                  });
+                }
+              });
+          });
+        });
+      }
     },
     // Unassign Client from event
     unassignClient(eventID) {
