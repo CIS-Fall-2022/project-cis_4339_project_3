@@ -31,7 +31,10 @@ export default {
       },
       options: {
           scales: {
-            y: { min: 0 }
+            y: { 
+                suggestedMin: 0,
+                suggestedMax: 20
+            }
           }
       }
     });
