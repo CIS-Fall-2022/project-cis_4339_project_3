@@ -266,6 +266,7 @@ export default {
             this.checkedServices = [];
           })
           .catch((error) => {
+            alert("ERROR: " + error.response.data);
             console.log(error);
           });
       } else {
