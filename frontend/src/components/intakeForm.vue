@@ -77,7 +77,7 @@ export default {
         lastName: { required, alpha },
         email: { email },
         address: {
-          city: { required },
+          city: { required, alpha },
           county: { alpha },
         },
         phoneNumbers: {
