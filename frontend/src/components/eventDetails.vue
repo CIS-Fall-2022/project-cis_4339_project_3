@@ -335,6 +335,7 @@ export default {
         axios.put(apiURL, this.event).then(() => {
           alert("Update has been saved.");
           this.$router.back().catch((error) => {
+            alert("ERROR: " + error.response.data);
             console.log(error);
           });
         });
@@ -354,7 +355,8 @@ export default {
           axios.put(apiURL, { attendee: clientID }).then(() => {
               this.attendeeData.splice(indexOfArrayItem, 1);
           }).catch(error => {
-              console.log(error)
+              alert("ERROR: " + error.response.data);
+              console.log(error);
           });
       }
     },

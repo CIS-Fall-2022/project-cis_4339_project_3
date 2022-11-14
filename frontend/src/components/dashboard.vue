@@ -9,11 +9,11 @@
         <h3 class="text-2xl font-bold">Event Attendence Chart</h3>
         
         <div class="flex flex-col col-span-2">
-          <EnrollmentBar
+          <AttendeesBar
             v-if="!loading && !error"
             :label="labels"
             :chart-data="count"
-          ></EnrollmentBar>
+          ></AttendeesBar>
         </div>
 
         <!-- Start of loading animation -->
@@ -67,10 +67,10 @@
 
 <script>
 import axios from "axios";
-import EnrollmentBar from "@/components/BarChartComponent.vue";
+import AttendeesBar from "@/components/BarChartComponent.vue";
 export default {
   components: {
-    EnrollmentBar
+    AttendeesBar
   },
   data() {
     return {

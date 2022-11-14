@@ -156,7 +156,8 @@ export default {
           axios.delete(apiURL).then(() => {
               this.queryData.splice(indexOfArrayItem, 1);
           }).catch(error => {
-              console.log(error)
+              alert("ERROR: " + error.response.data);
+              console.log(error);
           });
       }
     }
