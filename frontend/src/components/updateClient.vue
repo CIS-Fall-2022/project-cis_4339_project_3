@@ -103,7 +103,7 @@ export default {
         axios.put(apiURL, this.client).then(() => {
           alert("Update has been saved.");
           this.$router.back().catch((error) => {
-            alert("ERROR in update submission: " + error.response.data);
+            alert("ERROR: " + error.response.data);
             console.log(error);
           });
         });
