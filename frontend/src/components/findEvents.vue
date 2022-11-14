@@ -60,7 +60,8 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
       <div class="ml-10">
         <h2 class="text-2xl font-bold">List of Events</h2>
-        <h3 class="italic">Click table row to edit/display an entry</h3>
+        <h3 class="italic">Click EDIT to update/display an event</h3>
+        <h3 class="italic">Click DELETE to remove an event</h3>
       </div>
       <div class="flex flex-col col-span-2">
         <table class="min-w-full shadow-md rounded">
@@ -77,7 +78,7 @@
               <td class="p-2 text-left">{{ event.eventName }}</td>
               <td class="p-2 text-left">{{ formattedDate(event.date) }}</td>
               <td class="p-2 text-left">{{ event.address.line1 }}</td>
-              <td>
+              <td class="p-2 text-left">
                 <button @click="editEvent(event._id)" class="bg-green-700 text-white rounded">Edit</button>
                 <button @click.prevent="deleteEvent(event._id)" class="bg-red-700 text-white rounded">Delete</button>
               </td>

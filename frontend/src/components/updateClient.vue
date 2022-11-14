@@ -1,6 +1,6 @@
 <script>
 import useVuelidate from "@vuelidate/core";
-import { required, email, alpha, numeric } from "@vuelidate/validators";
+import { required, email, alpha, numeric, minLength, maxLength } from "@vuelidate/validators";
 import VueMultiselect from "vue-multiselect";
 import axios from "axios";
 import { DateTime } from "luxon";
@@ -169,8 +169,8 @@ export default {
           county: { alpha },
         },
         phoneNumbers: {
-          primaryPhone: { required, numeric },
-          altPhone: { numeric }
+          primaryPhone: { required, numeric, minLength: minLength(10), maxLength: maxLength(10) },
+          altPhone: { numeric, minLength: minLength(10), maxLength: maxLength(10) }
         },
       },
     };

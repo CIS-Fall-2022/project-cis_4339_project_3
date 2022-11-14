@@ -158,6 +158,13 @@
                 placeholder
                 v-model="event.address.city"
               />
+              <span class="text-black" v-if="v$.event.address.city.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.event.address.city.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
           <div></div>
@@ -171,6 +178,13 @@
                 placeholder
                 v-model="event.address.county"
               />
+              <span class="text-black" v-if="v$.event.address.county.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.event.address.county.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
           <!-- form field -->
@@ -211,7 +225,8 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
           <div>
             <h2 class="text-2xl font-bold">List of Attendees</h2>
-            <h3 class="italic">Click table row to edit/display an entry</h3>
+            <h3 class="italic">Click EDIT to display a client</h3>
+            <h3 class="italic">Click REMOVE to unassign client from the event</h3>
           </div>
           <div class="flex flex-col col-span-2">
             <table class="min-w-full shadow-md rounded">
@@ -228,9 +243,9 @@
                   <td class="p-2 text-left"> {{ client.attendeeFirstName + " " + client.attendeeLastName }} </td>
                   <td class="p-2 text-left"> {{ client.attendeeCity }} </td>
                   <td class="p-2 text-left"> {{ client.attendeePhoneNumber }} </td>
-                  <td>
+                  <td class="p-2 text-left">
                     <button @click="editClient(client.attendeeID)" class="bg-green-700 text-white rounded">Edit</button>
-                    <button @click.prevent="unassignClient(client.attendeeID)" class="bg-red-700 text-white rounded">Unassign</button>
+                    <button @click.prevent="unassignClient(client.attendeeID)" class="bg-red-700 text-white rounded">Remove</button>
                   </td>
                 </tr>
               </tbody>
@@ -244,7 +259,7 @@
 
 <script>
 import useVuelidate from "@vuelidate/core";
-import { required, email, alpha, numeric } from "@vuelidate/validators";
+import { required, alpha } from "@vuelidate/validators";
 import axios from "axios";
 import { DateTime } from "luxon";
 
@@ -310,20 +325,27 @@ export default {
     formattedDate(datetimeDB) {
       return DateTime.fromISO(datetimeDB).plus({ days: 1 }).toLocaleString();
     },
-    handleEventUpdate() {
-      this.event.services = this.checkedServices;
-      let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/${this.id}`;
-      axios.put(apiURL, this.event).then(() => {
-        alert("Update has been saved.");
-        this.$router.back().catch((error) => {
-          console.log(error);
+    async handleEventUpdate() {
+      // Checks to see if there are any errors in validation
+      const isFormCorrect = await this.v$.$validate();
+      // If no errors found. isFormCorrect = True then the form is submitted
+      if (isFormCorrect) {
+        this.event.services = this.checkedServices;
+        let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/${this.id}`;
+        axios.put(apiURL, this.event).then(() => {
+          alert("Update has been saved.");
+          this.$router.back().catch((error) => {
+            console.log(error);
+          });
         });
-      });
+      } else {
+        alert('Update submission failed. Please check your entries!');
+      }
     },
     editClient(clientID) {
       this.$router.push({ name: "updateclient", params: { id: clientID } });
     },
-    //TODO: Remove client from attendee list
+    //Remove client from attendee list
     unassignClient(clientID) {
       let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/deleteAttendee/${this.$route.params.id}`;
       let indexOfArrayItem = this.attendeeData.findIndex(i => i._id === clientID);
@@ -343,6 +365,10 @@ export default {
       event: {
         eventName: { required },
         date: { required },
+        address: {
+          city: { alpha },
+          county: { alpha }
+        },
       },
     };
   },
