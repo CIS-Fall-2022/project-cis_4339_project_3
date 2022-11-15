@@ -14,8 +14,12 @@ Setup a .env file with following variables, e.g.:
 VITE_ROOT_API=http://localhost:3000
 ```
 ```
-VITE_ORG_ID = < retrieve organization ID from backend/database >
+VITE_ORG_ID = < retrieve organization ID from database collection >
 ```
+```
+PORT = < frontend port # (MUST BE DIFFERENT FROM BACKEND PORT #) >
+```
+
 ### Compiles and hot-reloads for development
 ```
 npm run dev

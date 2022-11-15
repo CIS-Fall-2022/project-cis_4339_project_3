@@ -18,8 +18,9 @@ Organization_ID will be used as a default value in primary and event schemas. Th
 ORGANIZATION_ID = < retrieve id from organizationData collection >
 ```
 ```
-ORGANIZATION_NAME = < organizationName from organizationData collection >
+PORT = < backend port # (MUST BE DIFFERENT PORT FROM FRONTEND) >
 ```
+
 ### Compiles and hot-reloads for development
 ```
 npm start
