@@ -92,6 +92,7 @@
               <td class="p-2 text-left">{{ client.address.city }}</td>
               <td class="p-2 text-left">
                 <button @click="editClient(client._id)" class="bg-green-700 text-white rounded">Edit</button>
+                <!-- DELETE client button -->
                 <button @click.prevent="deleteClient(client._id)" class="bg-red-700 text-white rounded">Delete</button>
               </td>
             </tr>

@@ -144,7 +144,7 @@ export default {
         });
       }
     },
-    // Unassign Client from event
+    // Unassign Client from event attendees list
     unassignClient(eventID) {
       let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/deleteAttendee/${eventID}`;
       let indexOfArrayItem = this.clientEvents.findIndex(i => i._id === eventID);
@@ -154,7 +154,7 @@ export default {
               this.clientEvents.splice(indexOfArrayItem, 1);
           }).catch(error => {
               alert("ERROR: " + error.response.data);
-              console.log(error)
+              console.log(error);
           });
       }
     },
@@ -426,6 +426,7 @@ export default {
                   <td class="p-2 text-left">{{ event.eventName }}</td>
                   <td class="p-2 text-left">{{ formattedDate(event.eventDate) }}</td>
                   <td>
+                    <!-- Unassign client from event button -->
                     <button @click.prevent="unassignClient(event._id)" class="bg-red-700 text-white rounded">Unassign Client</button>
                   </td>
                 </tr>

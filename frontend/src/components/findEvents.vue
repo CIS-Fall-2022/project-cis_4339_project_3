@@ -80,6 +80,7 @@
               <td class="p-2 text-left">{{ event.address.line1 }}</td>
               <td class="p-2 text-left">
                 <button @click="editEvent(event._id)" class="bg-green-700 text-white rounded">Edit</button>
+                <!-- DELETE event button -->
                 <button @click.prevent="deleteEvent(event._id)" class="bg-red-700 text-white rounded">Delete</button>
               </td>
             </tr>

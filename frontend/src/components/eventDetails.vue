@@ -245,6 +245,7 @@
                   <td class="p-2 text-left"> {{ client.attendeePhoneNumber }} </td>
                   <td class="p-2 text-left">
                     <button @click="editClient(client.attendeeID)" class="bg-green-700 text-white rounded">Edit</button>
+                    <!-- Unassign client from an event button -->
                     <button @click.prevent="unassignClient(client.attendeeID)" class="bg-red-700 text-white rounded">Remove</button>
                   </td>
                 </tr>
