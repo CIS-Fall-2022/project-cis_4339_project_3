@@ -161,6 +161,13 @@
                 placeholder
                 v-model="event.address.city"
               />
+              <span class="text-black" v-if="v$.event.address.city.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.event.address.city.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
           <div></div>
@@ -174,6 +181,13 @@
                 placeholder
                 v-model="event.address.county"
               />
+              <span class="text-black" v-if="v$.event.address.county.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.event.address.county.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
           <!-- form field -->
@@ -199,7 +213,7 @@
 </template>
 <script>
 import useVuelidate from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
+import { required, alpha } from "@vuelidate/validators";
 import axios from "axios";
 export default {
   setup() {
@@ -236,7 +250,7 @@ export default {
           .then(() => {
             alert("Event has been added.");
             this.$router.push("/findEvents");
-            this.client = {
+            this.event = {
               eventName: "",
               services: [],
               date: "",
@@ -252,8 +266,11 @@ export default {
             this.checkedServices = [];
           })
           .catch((error) => {
+            alert("ERROR: " + error.response.data);
             console.log(error);
           });
+      } else {
+        alert("Form submission failed. Please check your entries!");
       }
     },
   },
@@ -263,6 +280,10 @@ export default {
       event: {
         eventName: { required },
         date: { required },
+        address: {
+          city: { alpha },
+          county: { alpha }
+        },
       },
     };
   },

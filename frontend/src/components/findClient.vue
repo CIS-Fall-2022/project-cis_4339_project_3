@@ -72,7 +72,8 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-10">
       <div class="ml-10">
         <h2 class="text-2xl font-bold">List of Clients</h2>
-        <h3 class="italic">Click table row to edit/display an entry</h3>
+        <h3 class="italic">Click EDIT to update/display a client</h3>
+        <h3 class="italic">Click DELETE to remove a client</h3>
       </div>
       <div class="flex flex-col col-span-2">
         <table class="min-w-full shadow-md rounded">
@@ -81,13 +82,19 @@
               <th class="p-4 text-left">Name</th>
               <th class="p-4 text-left">Phone number</th>
               <th class="p-4 text-left">City</th>
+              <th class="p-4 text-left">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-300">
-            <tr @click="editClient(client._id)" v-for="client in queryData" :key="client._id">
+            <tr v-for="client in queryData" :key="client._id">
               <td class="p-2 text-left">{{ client.firstName + " " + client.lastName }}</td>
-              <td class="p-2 text-left">{{ client.phoneNumbers[0].primaryPhone }}</td>
+              <td class="p-2 text-left">{{ client.phoneNumbers.primaryPhone }}</td>
               <td class="p-2 text-left">{{ client.address.city }}</td>
+              <td class="p-2 text-left">
+                <button @click="editClient(client._id)" class="bg-green-700 text-white rounded">Edit</button>
+                <!-- DELETE client button -->
+                <button @click.prevent="deleteClient(client._id)" class="bg-red-700 text-white rounded">Delete</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -141,12 +148,27 @@ export default {
 
       //get all entries
       let apiURL = import.meta.env.VITE_ROOT_API + `/primarydata/`;
+      this.queryData = [];
       axios.get(apiURL).then((resp) => {
         this.queryData = resp.data;
       });
     },
     editClient(clientID) {
       this.$router.push({ name: "updateclient", params: { id: clientID } });
+    },
+    //DELETE client method
+    deleteClient(clientID) {
+      let apiURL = import.meta.env.VITE_ROOT_API + `/primarydata/${clientID}`;
+      let indexOfArrayItem = this.queryData.findIndex(i => i._id === clientID);
+
+      if (window.confirm("Do you really want to delete?")) {
+          axios.delete(apiURL).then(() => {
+              this.queryData.splice(indexOfArrayItem, 1);
+          }).catch(error => {
+              alert("ERROR: " + error.response.data);
+              console.log(error);
+          });
+      }
     },
   },
 };

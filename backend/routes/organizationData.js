@@ -31,35 +31,4 @@ router.get("/id/:id", (req, res, next) => {
     );
 });
 
-//POST create an organization document
-router.post("/", (req, res, next) => { 
-    organizationdata.create( 
-        req.body, 
-        (error, data) => { 
-            if (error) {
-                return next(error);
-            } else {
-                res.json(data);
-            }
-        }
-    );
-});
-
-//DELETE function for organization by id
-router.delete("/:id", (req, res, next) => {
-    //mongoose will use clientID of document
-    organizationdata.findOneAndDelete(
-        { _id: req.params.id }, 
-        (error, data) => {
-            if (error) {
-                return next(error);
-            } else {
-                res.status(200).json({
-                    msg: data
-                });
-            }
-        }
-    );
-});
-
 module.exports = router;

@@ -1,6 +1,6 @@
 <script>
 import useVuelidate from "@vuelidate/core";
-import { required, email, alpha, numeric } from "@vuelidate/validators";
+import { required, email, alpha, numeric, minLength, maxLength } from "@vuelidate/validators";
 import VueMultiselect from "vue-multiselect";
 import axios from "axios";
 import { DateTime } from "luxon";
@@ -23,12 +23,10 @@ export default {
         middleName: "",
         lastName: "",
         email: "",
-        phoneNumbers: [
-          {
+        phoneNumbers: {
             primaryPhone: "",
-            secondaryPhone: "",
-          },
-        ],
+            altPhone: "",
+        },
         address: {
           line1: "",
           line2: "",
@@ -56,10 +54,10 @@ export default {
         this.client.middleName = data.middleName;
         this.client.lastName = data.lastName;
         this.client.email = data.email;
-        this.client.phoneNumbers[0].primaryPhone =
-          data.phoneNumbers[0].primaryPhone;
-        this.client.phoneNumbers[0].secondaryPhone =
-          data.phoneNumbers[0].secondaryPhone;
+        this.client.phoneNumbers.primaryPhone =
+          data.phoneNumbers.primaryPhone;
+        this.client.phoneNumbers.altPhone =
+          data.phoneNumbers.altPhone;
         this.client.address.line1 = data.address.line1;
         this.client.address.line2 = data.address.line2;
         this.client.address.city = data.address.city;
@@ -73,8 +71,9 @@ export default {
       )
       .then((resp) => {
         let data = resp.data;
-        resp.data.forEach((event) => {
+        data.forEach((event) => {
           this.clientEvents.push({
+            _id: event._id,
             eventName: event.eventName,
             eventDate: event.date,
           });
@@ -95,54 +94,92 @@ export default {
     formattedDate(datetimeDB) {
       return DateTime.fromISO(datetimeDB).plus({ days: 1 }).toLocaleString();
     },
-    handleClientUpdate() {
-      let apiURL = import.meta.env.VITE_ROOT_API + `/primarydata/${this.id}`;
-      axios.put(apiURL, this.client).then(() => {
-        alert("Update has been saved.");
-        this.$router.back().catch((error) => {
-          console.log(error);
+    async handleClientUpdate() {
+      // Check to see if there are any errors in validation
+      const isFormCorrect = await this.v$.$validate();
+      // If no errors found. isFormCorrect = True then the form is submitted
+      if (isFormCorrect) {
+        let apiURL = import.meta.env.VITE_ROOT_API + `/primarydata/${this.id}`;
+        axios.put(apiURL, this.client).then(() => {
+          alert("Update has been saved.");
+          this.$router.back().catch((error) => {
+            alert("ERROR: " + error.response.data);
+            console.log(error);
+          });
         });
-      });
+      } else {
+        alert('Update submission failed. Please check your entries!');
+      }
     },
     addToEvent() {
-      this.eventsChosen.forEach((event) => {
-        let apiURL =
-          import.meta.env.VITE_ROOT_API + `/eventdata/addAttendee/` + event._id;
-        axios.put(apiURL, { attendee: this.$route.params.id }).then(() => {
-          this.clientEvents = [];
-          axios
-            .get(
-              import.meta.env.VITE_ROOT_API +
-                `/eventdata/client/${this.$route.params.id}`
-            )
-            .then((resp) => {
-              let data = resp.data;
-              for (let i = 0; i < data.length; i++) {
-                this.clientEvents.push({
-                  eventName: data[i].eventName,
-                });
-              }
-            });
-        });
+      // check if chosen Events are already assigned to client and alert user to remove
+      let duplicateEvents = this.eventsChosen;
+      let validEvents = true;
+      this.clientEvents.forEach((event) => {
+        for (let i = 0; i < duplicateEvents.length; i++) {
+          if (duplicateEvents[i]._id === event._id) {
+            alert("Client is already signed up for " + event.eventName + " Please Remove!");
+            validEvents = !validEvents;
+          }
+        }
       });
+      // if no duplicate events then can assign client to chosen events
+      if (validEvents) {
+        this.eventsChosen.forEach((event) => {
+          let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/addAttendee/` + event._id;
+          axios.put(apiURL, { attendee: this.$route.params.id }).then(() => {
+            this.clientEvents = [];
+            axios.get(import.meta.env.VITE_ROOT_API + `/eventdata/client/${this.$route.params.id}`)
+              .then((resp) => {
+                let data = resp.data;
+                for (let i = 0; i < data.length; i++) {
+                  this.clientEvents.push({
+                    _id: data[i]._id,
+                    eventName: data[i].eventName,
+                    eventDate: data[i].date,
+                  });
+                }
+              });
+          });
+        });
+      }
+    },
+    // Unassign Client from event attendees list
+    unassignClient(eventID) {
+      let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/deleteAttendee/${eventID}`;
+      let indexOfArrayItem = this.clientEvents.findIndex(i => i._id === eventID);
+
+      if (window.confirm("Do you really want to Unassign?")) {
+          axios.put(apiURL, { attendee: this.$route.params.id }).then(() => {
+              this.clientEvents.splice(indexOfArrayItem, 1);
+          }).catch(error => {
+              alert("ERROR: " + error.response.data);
+              console.log(error);
+          });
+      }
     },
   },
   validations() {
     return {
       client: {
         firstName: { required, alpha },
+        middleName: { alpha },
         lastName: { required, alpha },
         email: { email },
-        phoneNumbers: [
-          {
-            primaryPhone: { required, numeric },
-          },
-        ],
+        address: {
+          city: { required },
+          county: { alpha },
+        },
+        phoneNumbers: {
+          primaryPhone: { required, numeric, minLength: minLength(10), maxLength: maxLength(10) },
+          altPhone: { numeric, minLength: minLength(10), maxLength: maxLength(10) }
+        },
       },
     };
   },
 };
 </script>
+
 <template>
   <main>
     <h1 class="font-bold text-4xl text-red-700 tracking-widest text-center mt-10">Update Client</h1>
@@ -183,6 +220,13 @@ export default {
                 placeholder
                 v-model="client.middleName"
               />
+              <span class="text-black" v-if="v$.client.middleName.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.client.middleName.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
 
@@ -235,12 +279,12 @@ export default {
                 type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-                v-model="client.phoneNumbers[0].primaryPhone"
+                v-model="client.phoneNumbers.primaryPhone"
               />
-              <span class="text-black" v-if="v$.client.phoneNumbers[0].primaryPhone.$error">
+              <span class="text-black" v-if="v$.client.phoneNumbers.primaryPhone.$error">
                 <p
                   class="text-red-700"
-                  v-for="error of v$.client.phoneNumbers[0].primaryPhone.$errors"
+                  v-for="error of v$.client.phoneNumbers.primaryPhone.$errors"
                   :key="error.$uid"
                 >{{ error.$message }}!</p>
               </span>
@@ -254,8 +298,15 @@ export default {
                 type="text"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
-                v-model="client.phoneNumbers[0].secondaryPhone"
+                v-model="client.phoneNumbers.altPhone"
               />
+              <span class="text-black" v-if="v$.client.phoneNumbers.altPhone.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.client.phoneNumbers.altPhone.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
         </div>
@@ -295,6 +346,13 @@ export default {
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 v-model="client.address.city"
               />
+              <span class="text-black" v-if="v$.client.address.city.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.client.address.city.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
           <div></div>
@@ -307,6 +365,13 @@ export default {
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 v-model="client.address.county"
               />
+              <span class="text-black" v-if="v$.client.address.county.$error">
+                <p
+                  class="text-red-700"
+                  v-for="error of v$.client.address.county.$errors"
+                  :key="error.$uid"
+                >{{ error.$message }}!</p>
+              </span>
             </label>
           </div>
           <!-- form field -->
@@ -329,7 +394,7 @@ export default {
             <button
               @click="handleClientUpdate"
               type="submit"
-              class="bg-red-700 text-white rounded"
+              class="bg-green-700 text-white rounded"
             >Update Client</button>
           </div>
           <div class="flex justify-between mt-10 mr-20">
@@ -353,12 +418,17 @@ export default {
                 <tr>
                   <th class="p-4 text-left">Event Name</th>
                   <th class="p-4 text-left">Date</th>
+                  <th class="p-4 text-left">Action</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-300">
                 <tr v-for="event in clientEvents" :key="event._id">
                   <td class="p-2 text-left">{{ event.eventName }}</td>
                   <td class="p-2 text-left">{{ formattedDate(event.eventDate) }}</td>
+                  <td>
+                    <!-- Unassign client from event button -->
+                    <button @click.prevent="unassignClient(event._id)" class="bg-red-700 text-white rounded">Unassign Client</button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -372,12 +442,13 @@ export default {
               :options="eventData"
               :multiple="true"
               label="eventName"
+              track-by="_id"
             ></VueMultiselect>
             <div class="flex justify-between">
               <button
                 @click="addToEvent"
                 type="submit"
-                class="mt-5 bg-red-700 text-white rounded"
+                class="mt-5 bg-green-700 text-white rounded"
               >Add Client to Events</button>
             </div>
           </div>

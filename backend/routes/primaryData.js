@@ -115,19 +115,31 @@ router.put("/:id", (req, res, next) => {
 
 //DELETE a Client by ID
 router.delete("/:id", (req, res, next) => {
-    //mongoose will use clientID of document
-    primarydata.findOneAndDelete(
-        { _id: req.params.id }, 
-        (error, data) => {
+    //remove client from every event they are signed up to before deletion
+    eventdata.updateMany(
+        { attendees: req.params.id },
+        { $pull: { attendees: req.params.id }},
+        (error) => {
             if (error) {
                 return next(error);
             } else {
-                res.status(200).json({
-                    msg: data
-                });
+                //mongoose will use clientID of document
+                primarydata.findOneAndDelete(
+                    { _id: req.params.id }, 
+                    (error, data) => {
+                        if (error) {
+                            return next(error);
+                        } else {
+                            res.status(200).json({
+                                msg: data
+                            });
+                        }
+                    }
+                );
             }
         }
     );
+    
 });
 
 module.exports = router;

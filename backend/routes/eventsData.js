@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const ObjectId = require('mongoose').Types.ObjectId
 
 //importing data model schemas
 let { eventdata } = require("../models/models"); 
@@ -149,11 +150,11 @@ router.delete("/:id", (req, res, next) => {
     );
 });
 
-//TODO: DELETE a client registered in attendees list with PUT request (Complete but need to check with professor)
-router.put("/deleteAttendee/:id", (req, res, next) => {
+// Remove a client registered in attendees list with PUT request 
+router.put("/deleteAttendee/:eventId", (req, res, next) => {
     //delete attendee from attendees list
     eventdata.updateOne(
-        { _id: req.params.id }, 
+        { _id: req.params.eventId }, 
         { $pull: { attendees: req.body.attendee } },
         (error, data) => {
             if (error) {
@@ -171,8 +172,8 @@ router.get('/eventgraph', (req, res, next) => {
     // SOURCE FOR DATE RANGE: https://stackoverflow.com/questions/7937233/how-do-i-calculate-the-date-in-javascript-three-months-prior-to-today
     let currentDate = new Date();
     eventdata.aggregate([
-        { $match: { 
-            organizationID: ORG_ID,
+        { $match: {
+            organizationID: ObjectId(ORG_ID),
             date: { $gte: new Date(currentDate.setMonth(currentDate.getMonth() - 2)), $lte: new Date() } 
         } },
         {$project: { count: { $size:"$attendees" }, eventName:1 }}
