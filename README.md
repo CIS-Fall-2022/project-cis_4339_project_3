@@ -22,7 +22,7 @@ Follow instructions in frontend README
 
 ## IMPORTANT Information on Postman Testing for Professor Lindner
 
-(1) BEFORE inserting data for primary/event collection, you need to create data for an organization (POST+GET endpoints are provided for organization collection)
+(1) BEFORE inserting data for primary/event collection, you need to retrieve the organization ID from database/backend
 
 (2) AFTER creation of an organization document, you need to retrieve the objectid and create an ENVIRONMENT variable in the backend called ORGANIZATION_ID
 ```
