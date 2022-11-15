@@ -235,7 +235,7 @@
                   <th class="p-4 text-left">Name</th>
                   <th class="p-4 text-left">City</th>
                   <th class="p-4 text-left">Phone Number</th>
-                  <th class="p-4 text-left">Action</th>
+                  <th class="p-4 text-left">Actions</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-300">
@@ -246,6 +246,7 @@
                   <td class="p-2 text-left">
                     <button @click="editClient(client.attendeeID)" class="bg-green-700 text-white rounded">Edit</button>
                     <!-- Unassign client from an event button -->
+                    &nbsp;
                     <button @click.prevent="unassignClient(client.attendeeID)" class="bg-red-700 text-white rounded">Remove</button>
                   </td>
                 </tr>
