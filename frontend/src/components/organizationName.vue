@@ -14,7 +14,7 @@ export default {
         };
     },
     mounted() {
-        let apiURL = import.meta.env.VITE_ROOT_API + `/organizationdata/id/` + import.meta.env.VITE_ORG_ID;
+        let apiURL = import.meta.env.VITE_ROOT_API + `/organizationdata/id`;
         axios.get(apiURL).then((resp) => {
             let data = resp.data;
             this.orgName = data[0].organizationName;

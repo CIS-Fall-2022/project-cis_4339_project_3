@@ -1,6 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
+//allow using a .env file
+require("dotenv").config();
+
+//organizationID to grab organization data for frontend
+const orgID = process.env.ORGANIZATION_ID;
+
 //importing data model schemas
 let { organizationdata } = require("../models/models");
 
@@ -17,10 +23,10 @@ router.get("/", (req, res, next) => {
     ).sort({ 'updatedAt': -1 }).limit(10);
 });
 
-//GET single entry by ID
-router.get("/id/:id", (req, res, next) => {
+//GET organization data by ID
+router.get("/id", (req, res, next) => {
     organizationdata.find( 
-        { _id: req.params.id }, 
+        { _id: orgID }, 
         (error, data) => {
             if (error) {
                 return next(error);
