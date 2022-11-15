@@ -20,11 +20,11 @@ cd frontend
 Follow instructions in frontend README
 
 
-## Setup instructions for 
+## Setup instructions for settup up organizaiton instance
 
 (1) BEFORE inserting data for primary/event collection, you need to retrieve the organization ID from database
 
-(2) AFTER manual creation of an organization document, you need to retrieve the objectid and create an ENVIRONMENT variable in the backend called ORGANIZATION_ID
+(2) AFTER manual creation of an organization document, you need to retrieve the objectid and create an ENVIRONMENT variable called ORGANIZATION_ID
 ```
 ORGANIZATION_ID = <objectID>
 ```
