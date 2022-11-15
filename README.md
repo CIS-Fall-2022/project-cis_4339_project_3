@@ -20,7 +20,7 @@ cd frontend
 Follow instructions in frontend README
 
 
-## IMPORTANT Information on Postman Testing for Professor Lindner
+## IMPORTANT Information on setting up application for Professor Lindner
 
 (1) BEFORE inserting data for primary/event collection, you need to retrieve the organization ID from database/backend
 
