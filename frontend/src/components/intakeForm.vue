@@ -298,7 +298,7 @@ export default {
           <div></div>
           <!-- submit button -->
           <div class="flex justify-between mt-10 mr-20">
-            <button class="bg-red-700 text-white rounded" type="submit">Add Client</button>
+            <button class="bg-green-700 text-white rounded" type="submit">Add Client</button>
           </div>
         </div>
       </form>
