@@ -123,7 +123,7 @@ export default {
           }
         }
       });
-      // if no duplicate events then can assign client to chosen events
+      // if no duplicate events then can assign client to chosen events 
       if (validEvents) {
         this.eventsChosen.forEach((event) => {
           let apiURL = import.meta.env.VITE_ROOT_API + `/eventdata/addAttendee/` + event._id;
